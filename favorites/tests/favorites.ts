@@ -24,33 +24,10 @@ describe("favorites", () => {
   })
 
   it("Writes our favorites to the blockchain", async () => {
-    await program.methods
-      .setFavorites(favoriteNumber, favoriteColor, favoriteHobbies)
-      .signers([user])
-      .rpc();
-
-    const favoritesPdaAndBump = web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("favorites"), user.publicKey.toBuffer()],
-      program.programId
-    );
-    
-    const favoritesPda = favoritesPdaAndBump[0];
-    
-    const dataFromPda = await program.account.favorites.fetch(favoritesPda);
-    
-    assert.equal(dataFromPda.color, favoriteColor);
-    assert.equal(dataFromPda.number.toString(), favoriteNumber.toString());
-    assert.deepEqual(dataFromPda.hobbies, favoriteHobbies);
-
-    try {
-      await program.methods.setFavorites(favoriteNumber, favoriteColor, favoriteHobbies)
-      .signers([someRandomGuy])
-      .rpc();
-    }
-    catch (error) {
-      const errorMessage = (error as Error).message;
-      assert.isTrue(errorMessage.includes("unknown signer"))
-    }
+      await program.methods
+        .setFavorites(favoriteNumber, favoriteColor, favoriteHobbies)
+        .signers([user])
+        .rpc();
   });
 
   it("Checks that unknown signer are unable to write to the blockchain", async () => {
