@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint \"$@\"",
+    "lint:fix": "eslint \"$@\" --fix"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +15,14 @@
     "@solana-developers/helpers": "^2.3.0",
     "@solana/spl-token": "^0.4.6",
     "@solana/web3.js": "^1.91.8",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
     "dotenv": "^16.4.5",
-    "esrun": "^3.2.26"
+    "eslint": "8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "esrun": "^3.2.26",
+    "typescript": "^5.4.5"
   },
   "volta": {
     "node": "20.13.1"
