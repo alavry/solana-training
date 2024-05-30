@@ -1,4 +1,4 @@
-import { createMint, getOrCreateAssociatedTokenAccount, mintTo } from "@solana/spl-token";
+import { createMint } from "@solana/spl-token";
 import "dotenv/config";
 import {
   getKeypairFromEnvironment,
