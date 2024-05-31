@@ -25,4 +25,11 @@ pub mod escrow {
             offered_amount)?;
         instructions::make_offer::save_offer(context, id, wanted_amount)
     }
+
+    pub fn take_offer(
+        context: Context<TakeOffer>,
+    ) -> Result<()> {
+        instructions::take_offer::send_wanted_tokens_to_maker(&context)?;
+        instructions::take_offer::withdraw_and_close_vault(context)
+    }
 }
