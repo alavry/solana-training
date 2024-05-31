@@ -16,6 +16,9 @@ pub struct MakeOffer<'info> {
   #[account(mint::token_program = token_program)]
   pub offered_token_mint: InterfaceAccount<'info, Mint>,
 
+  #[account(mint::token_program = token_program)]
+  pub wanted_token_mint: InterfaceAccount<'info, Mint>,
+
   #[account(
     mut,
     associated_token::mint = offered_token_mint,
@@ -28,7 +31,7 @@ pub struct MakeOffer<'info> {
     init,
     payer = maker,
     space = ANCHOR_DISCRIMINATOR + Offer::INIT_SPACE,
-    seeds = [b"offer", maker.key().as_ref(), id.to_le_byes().as_ref()],
+    seeds = [b"offer", maker.key().as_ref(), id.to_le_bytes().as_ref()],
     bump
   )]
   pub offer: Account<'info, Offer>,
@@ -40,7 +43,7 @@ pub struct MakeOffer<'info> {
     associated_token::authority = offer,
     associated_token::token_program = token_program
   )]
-  pub vault: InterfaceAcccount<'info, TokenAccount>,
+  pub vault: InterfaceAccount<'info, TokenAccount>,
 
   pub associated_token_program: Program<'info, AssociatedToken>,
   pub token_program: Interface<'info, TokenInterface>,
@@ -53,12 +56,12 @@ pub fn send_offered_tokens_to_vault(
 ) -> Result<()> {
   let transfer_accounts = TransferChecked {
     from: context.accounts.maker_offered_token_account.to_account_info(),
-    mint:context.accounts.offered_token_mint.to_account_info(),
+    mint: context.accounts.offered_token_mint.to_account_info(),
     to: context.accounts.vault.to_account_info(),
     authority: context.accounts.maker.to_account_info(),
   };
 
-  let cpi_accounts = CpiContext::new(
+  let cpi_context = CpiContext::new(
     context.accounts.token_program.to_account_info(),
     transfer_accounts
   );
@@ -70,15 +73,14 @@ pub fn send_offered_tokens_to_vault(
   )
 }
 
-
 pub fn save_offer(context: Context<MakeOffer>, id: u64, wanted_amount: u64) -> Result<()> {
   context.accounts.offer.set_inner(Offer {
     id,
-    maker: context.account.maker.key(),
+    maker: context.accounts.maker.key(),
     offered_token_mint: context.accounts.offered_token_mint.key(),
     wanted_token_mint: context.accounts.wanted_token_mint.key(),
     wanted_amount,
-    bump: context.accounts.offer.bump,
+    bump: context.bumps.offer,
   });
-  Ok(());
+  Ok(())
 }
