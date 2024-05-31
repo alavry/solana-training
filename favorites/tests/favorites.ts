@@ -1,6 +1,6 @@
 
 import { Program, Wallet, AnchorProvider, setProvider, workspace, web3, getProvider, BN } from "@coral-xyz/anchor";
-import { airdropIfRequired } from "@solana-developers/helpers";
+import { airdropIfRequired, getCustomErrorMessage } from "@solana-developers/helpers";
 import { Favorites } from "../target/types/favorites";
 import { assert } from "chai";
 
@@ -14,14 +14,6 @@ describe("favorites", () => {
   const favoriteColor = "purple";
   const favoriteHobbies = ["skiing", "skydiving", "biking"];
 
-  before(async () => {
-    await airdropIfRequired(
-      getProvider().connection,
-      user.publicKey,
-      0.5 * web3.LAMPORTS_PER_SOL,
-      1 * web3.LAMPORTS_PER_SOL
-    );
-  })
 
   it("Writes our favorites to the blockchain", async () => {
       await program.methods
@@ -51,6 +43,10 @@ describe("favorites", () => {
     }
     catch (error) {
       const errorMessage = (error as Error).message;
+      // const customErrorMessage = getCustomErrorMessage(
+      //   systemProgramErrors,
+      //   error
+      // )
       assert.isTrue(errorMessage.includes("unknown signer"))
     }
   });
